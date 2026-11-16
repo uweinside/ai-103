@@ -26,7 +26,9 @@ http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("appli
 
 // Authentication belongs to the application, not the model. DefaultAzureCredential
 // can use the developer identity established by az login (or another supported
-// identity in its chain). Azure RBAC separately decides what that identity may do.
+// identity in its chain). The example .env selects AzureCliCredential in that
+// chain so another developer sign-in cannot take precedence. Azure RBAC separately
+// decides what that identity may do.
 // Reuse the credential so Azure.Identity can cache tokens; never use an API key.
 DefaultAzureCredential credential = new();
 TokenRequestContext tokenContext = new(["https://cognitiveservices.azure.com/.default"]);

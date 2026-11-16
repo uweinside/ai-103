@@ -22,7 +22,8 @@ using HttpClient http = new() { Timeout = TimeSpan.FromSeconds(120) };
 http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 // The application authenticates, not the model or the local ticket function.
 // DefaultAzureCredential supports the developer identity from az login as part
-// of its credential chain. RBAC permissions are separate from authentication.
+// of its credential chain. The example .env selects AzureCliCredential so a
+// different developer sign-in cannot take precedence. RBAC is a separate check.
 // Reuse this instance for token caching; no API key is accepted by this sample.
 DefaultAzureCredential credential = new();
 string url = endpoint + "/openai/v1/responses";
@@ -58,7 +59,10 @@ while (true)
     if (string.IsNullOrWhiteSpace(question)) continue;
 
     // This request tells the MODEL about a tool. It does not register C# code
-    // with Azure or grant access to any back-end system.
+    // with Azure or grant access to any back-end system. Strict schemas should
+    // not be combined with parallel tool calls: Microsoft recommends disabling
+    // them so the returned arguments can follow the schema. This intentionally
+    // limits this response to at most one tool request, not tool execution.
     var first = new
     {
         model = deployment,
@@ -66,6 +70,7 @@ while (true)
         input = question,
         tools = new[] { ticketTool },
         tool_choice = "auto",
+        parallel_tool_calls = false,
         store = true
     };
 
@@ -73,8 +78,9 @@ while (true)
     JsonElement firstRoot = firstReply.RootElement;
     string? responseId = firstRoot.GetProperty("id").GetString();
 
-    // A model may ask for zero, one, or MULTIPLE tools. We extract function_call
-    // items from the output rather than guessing where they are in the array.
+    // This request allows zero or one tool call. Still inspect every output item:
+    // the response may contain reasoning or text, and other configurations can
+    // permit multiple calls. Only application code can authorize and execute one.
     List<(string CallId, string Name, string Arguments)> calls = [];
     foreach (JsonElement item in firstRoot.GetProperty("output").EnumerateArray())
     {

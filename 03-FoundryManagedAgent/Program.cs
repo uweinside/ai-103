@@ -23,7 +23,8 @@ string endpoint = Required("FOUNDRY_PROJECT_ENDPOINT");
 string deployment = Required("FOUNDRY_MODEL");
 // The client application authenticates with Entra ID, not the managed agent's
 // instructions. DefaultAzureCredential can use az login for local development;
-// the SDK requests and refreshes tokens for the appropriate service audience.
+// the example .env selects AzureCliCredential to avoid another local sign-in.
+// The SDK requests and refreshes tokens for the appropriate service audience.
 // RBAC must also permit agent management and model execution. Authentication
 // errors propagate; there is no API-key fallback and credentials are not logged.
 DefaultAzureCredential credential = new();

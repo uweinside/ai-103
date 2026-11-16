@@ -22,8 +22,9 @@ string endpoint = Required("FOUNDRY_PROJECT_ENDPOINT");
 string model = Required("FOUNDRY_MODEL");
 // The application supplies the identity; defining three agents does not create
 // three Azure identities or grant permissions through model instructions.
-// DefaultAzureCredential can use az login locally. The SDK handles token
-// acquisition/refresh, while Azure RBAC controls access to the deployment.
+// DefaultAzureCredential can use az login locally; the example .env selects
+// AzureCliCredential so another local sign-in cannot take precedence. The SDK
+// handles token acquisition/refresh, while Azure RBAC controls deployment access.
 // Authentication errors propagate without an API-key fallback or token logging.
 DefaultAzureCredential credential = new();
 var project = new AIProjectClient(new Uri(endpoint), credential);

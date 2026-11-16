@@ -4,7 +4,7 @@
 
 - Ask about `INC-1042`, then use a non-existent ticket number.
 - Stop at the `calls` loop: the LLM made a request, not a function call into your process.
-- Inspect strict JSON Schema, argument validation, allowlist and returned `function_call_output`.
+- Inspect strict JSON Schema, `parallel_tool_calls = false`, argument validation, allowlist and returned `function_call_output`. The request permits at most one tool call per response; the model still only requests it.
 - Ask what would change if the function could delete tickets.
 
 ## Run

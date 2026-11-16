@@ -24,7 +24,7 @@ Open **`AI103-Teaching.code-workspace`** in VS Code. Each sample is independent.
 
 1. Open `AI103-Teaching.code-workspace` in VS Code.
 2. Run `az login` and verify subscription/tenant.
-3. Set environment variables as explained in `SETUP.md` (or use `.env` with the supplied launcher script).
+3. Configure the environment variables as explained in `SETUP.md`. If using `.env`, load it into the terminal before running a project directly, or use the supplied launcher script.
 4. In the VS Code integrated terminal, run one sample:
 
 ```bash
