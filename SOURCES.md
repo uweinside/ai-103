@@ -9,6 +9,7 @@
 - Strict function calling and parallel-call limitation: https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/structured-outputs (checked 2026-11-16)
 - Microsoft Foundry / Agent Framework .NET quickstart: https://github.com/microsoft/agent-framework/blob/main/README.md
 - Foundry persisted agents inside .NET workflows: https://learn.microsoft.com/en-us/agent-framework/workflows/agents-in-workflows
+- Agent Framework workflow visualization and .NET `ToMermaidString()`: https://learn.microsoft.com/en-us/agent-framework/workflows/visualization (checked 2026-11-16)
 - Microsoft Agent Framework .NET project conventions: https://github.com/microsoft/agent-framework/blob/main/dotnet/samples/AGENTS.md
 - Foundry C# hosted agents and samples: https://github.com/microsoft-foundry/foundry-samples/tree/main/samples/csharp/hosted-agents
 - NuGet versions: https://www.nuget.org/packages/Azure.AI.Projects and https://www.nuget.org/packages/Microsoft.Agents.AI.Workflows
