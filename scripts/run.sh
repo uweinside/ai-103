@@ -14,6 +14,8 @@ case "${1:-}" in
   3) p=03-FoundryManagedAgent ;;
   4) p=04-AgentFrameworkWorkflow ;;
   5) p=05-McpClientAgent ;;
-  *) echo "Usage: bash scripts/run.sh {1|1b|2|3|4|5}"; exit 2 ;;
+  6) p=06-FoundryIqRag ;;
+  *) echo "Usage: bash scripts/run.sh {1|1b|2|3|4|5|6} [sample arguments]"; exit 2 ;;
 esac
-dotnet run --project "$p"
+shift
+dotnet run --project "$p" -- "$@"

@@ -24,6 +24,13 @@ Use the following prompts in GitHub Copilot Agent mode. Require explanations of 
 
 > Compare app 05's discovered MCP schema and remote dispatch with app 02's local function schema and manual loop. Add an evaluation that checks observed tool use and returned source links without snapshotting model prose. Preserve the read-only search allowlist and do not send private context to Learn.
 
+## 06 — Foundry IQ RAG
+
+> Compare the retrieved evidence with the original travel PDFs. Add an evaluation
+> that checks supported hotel/amenity facts and abstention on prices or live
+> availability, without snapshotting model prose. Keep retrieval read-only and
+> resource provisioning in the explicit setup script.
+
 ## Testing and teaching
 
 > Produce a short live-demo script for each app, show what output to expect, list two intentionally broken variants, and add a smoke-test command. Avoid snapshotting stochastic LLM text verbatim.

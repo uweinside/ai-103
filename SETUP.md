@@ -8,12 +8,15 @@ The example selects `gpt-5.4-mini` for the apps, including 01B. Replace both dep
 
 | Variable | Apps | Meaning |
 |---|---|---|
-| `AZURE_TOKEN_CREDENTIALS` | 01–05 | Set to `AzureCliCredential` in the example `.env` so `DefaultAzureCredential` uses the account from `az login` rather than another local developer identity. |
+| `AZURE_TOKEN_CREDENTIALS` | 01–06 | Set to `AzureCliCredential` in the example `.env` so `DefaultAzureCredential` uses the account from `az login` rather than another local developer identity. |
 | `AZURE_OPENAI_ENDPOINT` | 01–02 | Foundry/Azure OpenAI **resource root** (e.g. `https://my-resource.services.ai.azure.com` or `https://my-resource.openai.azure.com`); app appends `/openai/v1/responses`. Do not put `/openai/v1/` into this value. |
 | `AZURE_OPENAI_DEPLOYMENT_NAME` | 01–02 | Your deployment name, not necessarily the base model's name. |
-| `FOUNDRY_PROJECT_ENDPOINT` | 03–05 | Foundry project URL, e.g. `https://my-resource.services.ai.azure.com/api/projects/my-project`. |
-| `FOUNDRY_MODEL` | 03–05 | Model deployment name associated with the Foundry project. |
+| `FOUNDRY_PROJECT_ENDPOINT` | 03–06 | Foundry project URL, e.g. `https://my-resource.services.ai.azure.com/api/projects/my-project`. |
+| `FOUNDRY_MODEL` | 03–06 | Model deployment name associated with the Foundry project. |
 | `KEEP_DEMO_AGENT` | 03 | Set `true` to leave its created agent in Foundry; otherwise sample cleans up its created version. |
+| `FOUNDRY_IQ_SEARCH_ENDPOINT` | 06 | Dedicated Search service root; written to `.env` by app 06 setup. |
+| `FOUNDRY_IQ_KNOWLEDGE_BASE` | 06 | Reusable travel knowledge base name; written by setup. |
+| `FOUNDRY_IQ_CONNECTION_NAME` | 06 | Project-managed-identity MCP connection name; written by setup. |
 
 > If your Foundry project exposes a **project-scoped OpenAI v1 endpoint** rather than an Azure OpenAI resource-root endpoint, verify the route in your project's **Models / Endpoints** UI. Do not blindly concatenate paths. Apps 01–02 teach the resource-root `/openai/v1/responses` route.
 
@@ -34,7 +37,16 @@ The Azure CLI command is **`az login`**, not `az auth login`. Use `az login --te
 **All apps use `DefaultAzureCredential` and Microsoft Entra ID for model access; there is no API-key authentication path.** The example `.env` sets `AZURE_TOKEN_CREDENTIALS=AzureCliCredential` to restrict the chain to the identity signed in through Azure CLI. Without this setting, the default chain can select another configured identity (such as environment credentials, managed identity or a supported developer tool) before Azure CLI; `az account show` then describes the CLI account, not necessarily the identity selected by the chain. For a different hosting environment, change or remove the selector and configure the intended identity and permissions.
 
 **Apps 01–02:** explicitly acquire a bearer token for `https://cognitiveservices.azure.com/.default` before every REST request, including the tool-result turn. The reused credential caches and refreshes tokens; plain `HttpClient` does not do this itself.  
-**Apps 03–05:** pass the credential to Foundry's `AIProjectClient`; the SDK handles token acquisition and refresh for its service endpoints.
+**Apps 03–06:** pass the credential to Foundry's `AIProjectClient`; the SDK handles token acquisition and refresh for its service endpoints.
+
+**App 06 Foundry IQ:** run `.\06-FoundryIqRag\setup.ps1` once in PowerShell 7.
+It provisions a dedicated Basic Search service in the configured Foundry account's
+resource group (`ai-130-demo` here), uploads the three local fictional brochures
+directly, sets scoped RBAC, creates a knowledge base and project connection,
+and saves non-secret settings to `.env`. No portal upload or Blob Storage is
+required. The Search service has ongoing costs; see [sample 06](06-FoundryIqRag/README.md)
+for permissions, ownership, reruns and cleanup. The agent's Search access uses
+the **project's managed identity**, not a forwarded developer token.
 
 **App 01B:** passes the credential to the OpenAI SDK's `BearerTokenPolicy` with
 the same `https://cognitiveservices.azure.com/.default` audience as app 01.
@@ -63,6 +75,7 @@ Your Azure identity must have permission to invoke the deployment; persisted age
 ./scripts/run.ps1 3
 ./scripts/run.ps1 4
 ./scripts/run.ps1 5
+./scripts/run.ps1 6
 ```
 
 If `RemoteSigned` blocks the launcher because Windows marked it as downloaded, inspect the script and then unblock only that trusted file:
@@ -99,6 +112,7 @@ bash scripts/run.sh 2
 bash scripts/run.sh 3
 bash scripts/run.sh 4
 bash scripts/run.sh 5
+bash scripts/run.sh 6
 ```
 
 Both scripts load `.env` then call `dotnet run --project ...`. The variable values never appear in app logs.
@@ -145,7 +159,7 @@ The config contains two remote **Streamable HTTP** servers, neither requiring a 
 
 Select a server, connect, then inspect its **Tools**, input schema, tool result, and request/response history in the monitoring sidebar's **Protocol** view. Disconnect before switching servers. Discover the current tools before calling them: the server owns their names, schemas, and execution, and those can change. Use only public example queries and public repository names; tool arguments are transmitted to the selected external service. DeepWiki is a third-party service, not a Microsoft or MCP-project server.
 
-**Teaching boundary:** Inspector is an MCP client, not an LLM agent and not a transparent monitor for the five apps. Here the instructor chooses the tool and arguments. In an agent integration, the model requests a tool call; the client/runtime applies permissions, validates and dispatches it to the MCP server, and returns the result to the model. A tool result is context, not permission to execute instructions contained in that result. Inspect the protocol here, then contrast it with app 02's explicitly application-owned local function dispatch.
+**Teaching boundary:** Inspector is an MCP client, not an LLM agent and not a transparent monitor for these apps. Here the instructor chooses the tool and arguments. In an agent integration, the model requests a tool call; the client/runtime applies permissions, validates and dispatches it to the MCP server, and returns the result to the model. A tool result is context, not permission to execute instructions contained in that result. Inspect the protocol here, then contrast it with app 02's explicitly application-owned local function dispatch.
 
 Repeat the same calls without the browser:
 
