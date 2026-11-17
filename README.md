@@ -5,6 +5,10 @@
 
 Open **`AI103-Teaching.code-workspace`** in VS Code. Each sample is independent. Apps 01–04 use a fictional **IT service desk**, with synthetic ticket data; app 05 searches public Microsoft Learn documentation; app 06 recommends fictional hotels from the supplied travel brochures. No production system is modified.
 
+For the complete instructor walkthrough, see **[DEMO-GUIDE.md](DEMO-GUIDE.md)**:
+technology stack, architecture and code flow, preparation, run commands, teaching
+points, expected evidence, troubleshooting, costs, and cleanup for every demo.
+
 | Project | Demonstrates | Who owns the orchestration? | Day 2 connection |
 |---|---|---|---|
 | `01-DirectResponses` | REST Responses API, instructions, `previous_response_id` | Application + Responses service | APIs, model deployment, context |
