@@ -14,6 +14,12 @@
 - Foundry C# hosted agents and samples: https://github.com/microsoft-foundry/foundry-samples/tree/main/samples/csharp/hosted-agents
 - NuGet versions: https://www.nuget.org/packages/Azure.AI.Projects and https://www.nuget.org/packages/Microsoft.Agents.AI.Workflows
 - Microsoft.Agents.AI.Foundry 1.28.0 preview package: https://www.nuget.org/packages/Microsoft.Agents.AI.Foundry/1.28.0-preview.261106.1
+- Official MCP Inspector and current installation requirements: https://github.com/modelcontextprotocol/inspector (checked 2026-11-16; demo uses 2.14.0)
+- Inspector v2 server configuration and `--config` versus `--catalog`: https://github.com/modelcontextprotocol/inspector/blob/main/docs/mcp-server-configuration.md
+- Inspector v1 to v2 migration: https://github.com/modelcontextprotocol/inspector/blob/main/docs/v1-to-v2-migration.md
+- Microsoft Learn MCP Server overview, endpoint, and authentication requirements: https://learn.microsoft.com/en-us/training/support/mcp (checked 2026-11-16)
+- Microsoft Learn MCP developer reference and tool discovery: https://learn.microsoft.com/en-us/training/support/mcp-developer-reference (checked 2026-11-16)
+- DeepWiki public, read-only MCP server and Streamable HTTP endpoint: https://docs.devin.ai/work-with-devin/deepwiki-mcp (checked 2026-11-16)
 - Agent Framework C# MCP client discovery, `McpClientTool`/`AITool` registration and agent execution: https://learn.microsoft.com/en-us/agent-framework/agents/tools/local-mcp-tools?pivots=programming-language-csharp (checked 2026-11-17)
 - .NET MCP client quickstart and client/runtime function invocation boundary: https://learn.microsoft.com/en-us/dotnet/ai/quickstarts/build-mcp-client (checked 2026-11-17)
 - Microsoft Learn Streamable HTTP transport and `DelegatingAIFunction` examples: https://learn.microsoft.com/en-us/microsoftteams/platform/agents-in-teams/integrate-ai/ai-agent-sample-walkthrough?pivots=teams-sdk-csharp (checked 2026-11-17)

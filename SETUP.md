@@ -109,3 +109,46 @@ send private service-desk data to its public search tool.
 - **Agent creation unauthorized:** additional management permission needed.
 - **NuGet restore failure:** network/proxy, package versions or feed access; do not silently upgrade everything without noting API changes.
 - **.NET build error:** check exact referenced package versions, then compare current official samples in SOURCES.md.
+
+## Explore MCP servers with the official MCP Inspector
+
+This optional, standalone developer tool does not add MCP integration to the apps; app 05 implements its own independent MCP client in C#. The official project is **MCP Inspector** (`@modelcontextprotocol/inspector`), not a separate official "MCP Explorer" product.
+
+The demo uses Inspector **2.14.0**. Its Node.js requirement is `^22.23.4 || ^24.22.1 || >=26.12.1`. Install it for the current user, then launch from this repository:
+
+```powershell
+npm install --global @modelcontextprotocol/inspector@2.14.0
+mcp-inspector --web --config .\scripts\mcp-inspector.json
+```
+
+Open `http://127.0.0.1:6274` if the browser does not open automatically. Keep the launching terminal running; press Ctrl+C there to stop Inspector. Leave authentication enabled and the bind address on loopback. Inspector can start local processes when configured to do so; do not expose it on the network or enter credentials into a shared demonstration.
+
+The config contains two remote **Streamable HTTP** servers, neither requiring a key or sign-in:
+
+| Server | Endpoint | Suggested read-only demonstration |
+|---|---|---|
+| Microsoft Learn | `https://learn.microsoft.com/api/mcp` | Discover tools, select `microsoft_docs_search`, and supply `query`: `Microsoft Foundry Agent Framework MCP tools`. |
+| DeepWiki (public repositories) | `https://mcp.deepwiki.com/mcp` | Discover tools, select `read_wiki_structure`, and supply `repoName`: `modelcontextprotocol/inspector`. |
+
+Select a server, connect, then inspect its **Tools**, input schema, tool result, and request/response history in the monitoring sidebar's **Protocol** view. Disconnect before switching servers. Discover the current tools before calling them: the server owns their names, schemas, and execution, and those can change. Use only public example queries and public repository names; tool arguments are transmitted to the selected external service. DeepWiki is a third-party service, not a Microsoft or MCP-project server.
+
+**Teaching boundary:** Inspector is an MCP client, not an LLM agent and not a transparent monitor for the five apps. Here the instructor chooses the tool and arguments. In an agent integration, the model requests a tool call; the client/runtime applies permissions, validates and dispatches it to the MCP server, and returns the result to the model. A tool result is context, not permission to execute instructions contained in that result. Inspect the protocol here, then contrast it with app 02's explicitly application-owned local function dispatch.
+
+Repeat the same calls without the browser:
+
+```powershell
+mcp-inspector --cli --config .\scripts\mcp-inspector.json --server microsoft-learn --method tools/list
+mcp-inspector --cli --config .\scripts\mcp-inspector.json --server microsoft-learn --method tools/call --tool-name microsoft_docs_search --tool-arg 'query=Microsoft Foundry Agent Framework MCP tools'
+mcp-inspector --cli --config .\scripts\mcp-inspector.json --server deepwiki-public --method tools/call --tool-name read_wiki_structure --tool-arg 'repoName=modelcontextprotocol/inspector'
+```
+
+**Inspector v2 differences:** `--config` opens this file read-only; `--catalog` instead gives Inspector ownership of an editable server list. To add other servers through the UI without modifying the teaching configuration, copy it to a new local file outside the repository and launch with `--catalog` pointing to that copy. Review new servers' permissions and data handling before connecting; do not add filesystem/write tools or authenticated services to this demo without a separate review. v2 serves the UI and backend together on port **6274**; older v1 tutorials describing a separate proxy on 6277 and URL authentication tokens do not apply.
+
+Troubleshooting:
+
+- **405 when browsing the Learn endpoint:** expected; use Inspector with Streamable HTTP, not direct browser navigation or the legacy SSE transport.
+- **`mcp-inspector` not found after installing:** reopen the terminal so it picks up npm's user-bin directory, or use `npx --yes @modelcontextprotocol/inspector@2.14.0 --web --config .\scripts\mcp-inspector.json`.
+- **Port 6274 already in use:** do not stop an unrelated process. Set `$env:CLIENT_PORT = '6284'` in the launching terminal and browse `http://127.0.0.1:6284`.
+- **Unsupported resources/prompts:** capabilities differ by server. A tool-only server need not implement resources or prompts.
+- **Learn schema-portability warnings:** Inspector 2.14.0 flags nullable `type` arrays in Learn's output schemas. These are legal JSON Schema, not installation or execution errors; the demonstrated search succeeds. The schemas belong to the remote server, so do not rewrite them locally or hide the warnings. Other clients may have different schema-dialect restrictions.
+- **TLS, proxy, or remote errors:** preserve certificate verification and report the actual connection/tool error. Check the service's availability and your organization's approved proxy/CA configuration; do not disable TLS checks or Inspector authentication.

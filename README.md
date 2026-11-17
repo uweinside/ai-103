@@ -37,6 +37,8 @@ Then proceed to the next project. **These are intentionally five separate applic
 
 For the in-code MCP demonstration, run `dotnet run --project .\05-McpClientAgent -- --tools-only` without Azure, then `.\scripts\run.ps1 5` for the agent version. See [sample 05](05-McpClientAgent/README.md).
 
+For the optional MCP protocol demonstration, see [Install and run MCP Inspector](MCP-INSPECTOR.md), including how to restart it after rebooting.
+
 ## Trainer demo progression
 
 1. Start with a query about VPN policy, then ask a follow-up. Inspect request JSON and the `previous_response_id` value. Explain that state still has a scope, a retention policy, and a cost.
