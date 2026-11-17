@@ -10,6 +10,8 @@
 - Microsoft Foundry / Agent Framework .NET quickstart: https://github.com/microsoft/agent-framework/blob/main/README.md
 - Foundry persisted agents inside .NET workflows: https://learn.microsoft.com/en-us/agent-framework/workflows/agents-in-workflows
 - Agent Framework workflow visualization and .NET `ToMermaidString()`: https://learn.microsoft.com/en-us/agent-framework/workflows/visualization (checked 2026-11-16)
+- Agent Framework concurrent orchestration and independent agent perspectives: https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/concurrent?pivots=programming-language-csharp (checked 2026-11-17)
+- Explicit fan-out and fan-in barrier edges: https://learn.microsoft.com/en-us/agent-framework/concepts/workflows/edges?pivots=programming-language-csharp (checked 2026-11-17)
 - Microsoft Agent Framework .NET project conventions: https://github.com/microsoft/agent-framework/blob/main/dotnet/samples/AGENTS.md
 - Foundry C# hosted agents and samples: https://github.com/microsoft-foundry/foundry-samples/tree/main/samples/csharp/hosted-agents
 - NuGet versions: https://www.nuget.org/packages/Azure.AI.Projects and https://www.nuget.org/packages/Microsoft.Agents.AI.Workflows
@@ -26,6 +28,26 @@
 - Official MCP C# SDK and releases: https://github.com/modelcontextprotocol/csharp-sdk and https://www.nuget.org/packages/ModelContextProtocol/2.4.0 (checked 2026-11-17)
 
 This kit intentionally pins a package family rather than using floating `*` versions. The Microsoft Agent Framework package family moves rapidly, and up-to-date documentation can refer to a later version than the pin. If Copilot updates the code, require a `dotnet build` and mention the versions changed.
+
+**App 04 concurrent workflow (2026-11-17, issue #6):** intentionally replaces
+Triage -> Review -> Reply with two independent specialists and a joined composer,
+matching concurrent orchestration on course slide 49. The sequential exercise
+remains a teaching contrast, not a runtime mode. Uses the existing 1.28.0 workflow
+APIs (`ChatForwardingExecutor`, `BindAsExecutor` with `ForwardIncomingMessages=false`,
+`AddFanOutEdge`, `AddFanInBarrierEdge`, and a collector's
+`OnMessageDeliveryFinishedAsync`). No package versions, authentication contracts,
+or service endpoints changed; no SDK migration is required. The collector invokes
+the third code-defined agent only after both findings arrive; the text Mermaid
+summary now shows the fork/join rather than sequential arrows. Offline checks
+reference the app to test real framework behavior using deterministic chat clients.
+
+**App 04 build/runtime status (2026-11-17):** targeted restore/build and offline
+diagram/orchestration checks passed. A live run against the configured deployment
+streamed both specialist findings and a single composed answer, then printed the
+four fork/join Mermaid edges with escaped observed previews. The answer treated the
+matching fictional outage as stronger evidence while retaining uncertainty about
+the user's root cause. This is an observed run, not a guarantee of future model
+wording, scheduling, latency, or factual adherence.
 
 **Authentication change (2026-11-16):** all four apps now use `DefaultAzureCredential`. Apps 01–02 no longer accept `AZURE_OPENAI_API_KEY` and acquire Entra bearer tokens before every REST request so the credential can refresh them. Apps 03–04 pass the same credential type to `AIProjectClient` instead of `AzureCliCredential`. Local development uses `az login`; another configured identity can be selected earlier in the default chain. Existing key-only setups must switch to an Entra identity with the required RBAC permissions. No package versions or service routes changed.
 

@@ -18,7 +18,7 @@ Use the following prompts in GitHub Copilot Agent mode. Require explanations of 
 
 ## 04 — Workflow and operations
 
-> Add a third agent that checks for policy violations. Build a branch with a human approval gate before any action that would change a ticket. Add OpenTelemetry spans for each agent transition. Keep the initial demo read-only.
+> Extend the concurrent Technical/Incident → Compose workflow with a policy reviewer. Explain whether it should be an independent parallel perspective or a sequential check after composition. Add OpenTelemetry spans for the branches and join. Keep the initial demo read-only; any future ticket-writing action requires an explicit human approval gate.
 
 ## 05 — MCP client and agent
 

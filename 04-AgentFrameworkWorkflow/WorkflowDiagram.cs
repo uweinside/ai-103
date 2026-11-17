@@ -1,24 +1,31 @@
 using System.Globalization;
 using System.Text;
 
-// This is a presentation helper for this sample's sequential graph, not another
-// orchestrator. It uses the same stage order as WorkflowBuilder and literal
+// This is a presentation helper for this sample's concurrent graph, not another
+// orchestrator. It uses the same specialists as WorkflowBuilder and literal
 // observed text; the model neither chooses edges nor generates the diagram.
 internal static class WorkflowDiagram
 {
-    internal static string Render(IReadOnlyList<(string Name, string Role, string Output)> stages)
+    internal static string Render(
+        IReadOnlyList<(string Name, string Role, string Output)> specialists,
+        (string Name, string Role, string Output) composer)
     {
-        if (stages.Count == 0)
-            throw new ArgumentException("A workflow diagram needs at least one stage.", nameof(stages));
+        if (specialists.Count < 2)
+            throw new ArgumentException("A concurrent diagram needs at least two specialists.", nameof(specialists));
 
         var diagram = new StringBuilder("flowchart TD\n");
-        for (int i = 0; i < stages.Count; i++)
+        diagram.AppendLine("  input[\"User request<br/>Same input to both specialists\"]");
+        var stages = specialists.Append(composer).ToArray();
+        for (int i = 0; i < stages.Length; i++)
         {
             var stage = stages[i];
             diagram.AppendLine($"  step{i}[\"{Escape(stage.Name)}<br/>{Escape(stage.Role)}<br/>Output: {Escape(Preview(stage.Output))}\"]");
         }
-        for (int i = 1; i < stages.Count; i++)
-            diagram.AppendLine($"  step{i - 1} --> step{i}");
+        for (int i = 0; i < specialists.Count; i++)
+        {
+            diagram.AppendLine($"  input --> step{i}");
+            diagram.AppendLine($"  step{i} --> step{specialists.Count}");
+        }
         return diagram.ToString();
     }
 
