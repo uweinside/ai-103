@@ -3,4 +3,5 @@
   <Project Path="02-ManualToolCalling/ManualToolCalling.csproj" />
   <Project Path="03-FoundryManagedAgent/FoundryManagedAgent.csproj" />
   <Project Path="04-AgentFrameworkWorkflow/AgentFrameworkWorkflow.csproj" />
+  <Project Path="05-McpClientAgent/McpClientAgent.csproj" />
 </Solution>
