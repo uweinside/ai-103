@@ -57,3 +57,66 @@ future tool availability, schemas, model behavior or citation correctness.
 Offline checks in `tests\McpClientAgent.Tests` also passed for schema-preserving
 dispatch, the three-call budget, `isError=true`, and an SDK protocol exception
 after a previously successful call. The HTTP fixture opens no network sockets.
+
+## Foundry IQ hotel RAG sample (app 06, issue #5; checked 2026-11-17)
+
+- Foundry IQ workflow and reusable knowledge bases:
+  https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/what-is-foundry-iq
+- Direct file knowledge sources, minimal PDF extraction, synchronous ingestion,
+  filename retention, upload limits and duplicate-file semantics:
+  https://learn.microsoft.com/en-us/azure/search/agentic-knowledge-source-how-to-file
+- File knowledge source creation contract:
+  https://learn.microsoft.com/en-us/rest/api/searchservice/knowledge-sources/create-or-update?view=rest-searchservice-2026-08-01-preview
+- Direct file upload contract:
+  https://learn.microsoft.com/en-us/rest/api/searchservice/knowledge-sources/upload-file?view=rest-searchservice-2026-08-01-preview
+- Knowledge base creation, optional planning model and minimal extractive retrieval:
+  https://learn.microsoft.com/en-us/azure/search/agentic-retrieval-how-to-create-knowledge-base
+- Agent Service / Foundry IQ MCP integration, allowlisted
+  `knowledge_base_retrieve`, project-managed-identity connection and RBAC:
+  https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/foundry-iq-connect
+- Managed MCP tool execution in .NET:
+  https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/model-context-protocol?pivots=csharp
+- Search service provisioning options:
+  https://learn.microsoft.com/en-us/cli/azure/search/service?view=azure-cli-latest#az-search-service-create
+- Keyless Search roles:
+  https://learn.microsoft.com/en-us/azure/search/search-security-rbac
+- Search pricing and ongoing costs:
+  https://learn.microsoft.com/en-us/azure/search/search-sku-manage-costs
+
+**Packages/API compatibility:** app 06 pins `Azure.AI.Projects` and
+`Azure.AI.Extensions.OpenAI` to `3.0.0-beta.5`, matching the Projects family already
+used by the other managed-agent samples. The explicit Extensions pin avoids
+NuGet selecting an older beta for Projects' unavailable alpha dependency floor.
+No existing app's package version or API behavior changes; no breaking migration
+is required. App 06 needs neither Agent Framework nor the MCP client SDK:
+Foundry Agent Service owns the remote MCP session.
+
+Search knowledge and MCP endpoints use `2026-08-01-preview`, project management
+uses `2025-06-01`, and project connections use `2025-10-01-preview`. The linked
+IQ guide's C# snippet still shows an older Search version and
+`GlobalMcpToolCallApprovalPolicy`; the pinned .NET SDK instead exposes
+`DefaultMcpToolCallApprovalPolicy`. App 06 uses the latter and the current Search
+API used in that guide's REST instructions. Compile against the pins rather than
+mixing similarly named types from different preview generations.
+
+**Teaching choice:** a direct `file` knowledge source is real Foundry IQ, not
+OpenAI `file_search`. It avoids Blob Storage/indexer provisioning for three
+small PDFs. The source performs extraction/chunking/embedding; the knowledge
+base returns extractive grounding data without an additional planning/synthesis
+model. Only the managed travel agent generates the final recommendation.
+Prompts require source attribution and abstention; observed MCP use and successful
+execution are checked separately from human verification of citation accuracy.
+
+**Build/runtime status (2026-11-17):** six-project solution restore/build and
+offline evidence-gate checks passed, including absent retrieval, unexpected
+output shape, MCP errors, allowlist violations and partial/incomplete responses.
+A dedicated keyless Basic Search service was provisioned in `ai-130-demo`.
+Live retrieval recommended Thameside House (London river views/breakfast),
+Isar Garden Hotel (Munich river/spa), and Le Jardin Secret (Paris courtyard),
+each citing its corresponding uploaded PDF. A separate price/availability
+question explicitly abstained. All four temporary agents were deleted.
+Setup reruns skipped existing uploads and the service contained exactly three
+error-free brochure records. The initial upload returned a transient Azure
+cancellation; a rerun succeeded. Setup now bounds transient HTTP upload retries
+and checks for an already-completed upload before retrying. These are observed
+results, not guarantees about future service availability or model accuracy.
