@@ -20,6 +20,10 @@ Use the following prompts in GitHub Copilot Agent mode. Require explanations of 
 
 > Add a third agent that checks for policy violations. Build a branch with a human approval gate before any action that would change a ticket. Add OpenTelemetry spans for each agent transition. Keep the initial demo read-only.
 
+## 05 — MCP client and agent
+
+> Compare app 05's discovered MCP schema and remote dispatch with app 02's local function schema and manual loop. Add an evaluation that checks observed tool use and returned source links without snapshotting model prose. Preserve the read-only search allowlist and do not send private context to Learn.
+
 ## Testing and teaching
 
 > Produce a short live-demo script for each app, show what output to expect, list two intentionally broken variants, and add a smoke-test command. Avoid snapshotting stochastic LLM text verbatim.

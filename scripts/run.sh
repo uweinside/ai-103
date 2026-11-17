@@ -12,6 +12,7 @@ case "${1:-}" in
   2) p=02-ManualToolCalling ;;
   3) p=03-FoundryManagedAgent ;;
   4) p=04-AgentFrameworkWorkflow ;;
-  *) echo "Usage: bash scripts/run.sh {1|2|3|4}"; exit 2 ;;
+  5) p=05-McpClientAgent ;;
+  *) echo "Usage: bash scripts/run.sh {1|2|3|4|5}"; exit 2 ;;
 esac
 dotnet run --project "$p"
