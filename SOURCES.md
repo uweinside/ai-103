@@ -49,6 +49,42 @@ matching fictional outage as stronger evidence while retaining uncertainty about
 the user's root cause. This is an observed run, not a guarantee of future model
 wording, scheduling, latency, or factual adherence.
 
+**Responses SDK comparison (app 01B, issue #7; checked 2026-11-17)**
+
+- Current typed .NET client, Entra bearer policy, output helper and chaining:
+  https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/responses#chaining-responses-together
+- Resource-root v1 endpoint and Azure OpenAI Entra audience:
+  https://learn.microsoft.com/en-us/azure/developer/ai/how-to/switching-endpoints
+- Pinned OpenAI package: https://www.nuget.org/packages/OpenAI/2.15.0
+
+App 01B adds `OpenAI` **2.15.0** and retains `Azure.Identity` **1.17.0**,
+matching app 01's credential pattern. It uses `ResponsesClient`,
+`CreateResponseOptions`, `ResponseResult`, `StoredOutputEnabled`,
+`PreviousResponseId`, and `GetOutputText()`. Older SDK examples may instead
+use `OpenAIResponseClient`, `ResponseCreationOptions`, or `OpenAIResponse`;
+do not mix those API generations. These Responses types are still marked
+experimental (`OPENAI001`) in the pinned stable package; the sample explicitly
+opts in with a file-local pragma, matching Learn. Future upgrades may break
+source compatibility. The current Learn example uses
+`https://ai.azure.com/.default`; this resource-root comparison deliberately
+keeps app 01's documented `https://cognitiveservices.azure.com/.default`
+audience and the same configured endpoint.
+
+No existing application's package, route, or runtime behavior changes, so no
+breaking migration is required. This is a new independent project, not a
+replacement for the REST baseline or a new agent abstraction. The SDK owns
+serialization, HTTP error exceptions, and bearer-token refresh; the app still
+owns instructions, turn linkage, reset, and error presentation.
+
+**App 01B build/runtime status (2026-11-17):** targeted restore/build succeeded.
+A live three-turn check verified distinct stored IDs, explicit second-turn
+linkage and a new chain after `/new`. The follow-up recalled the fictional
+ticket reference; the reset turn had no reference in context. Blank input,
+case-insensitive commands, quit and EOF were exercised. An intentionally
+nonexistent deployment produced reported HTTP 404 errors without advancing
+the chain; both launchers selected 01B successfully. These are observed checks,
+not guarantees of future model wording, retention or service availability.
+
 **Authentication change (2026-11-16):** all four apps now use `DefaultAzureCredential`. Apps 01–02 no longer accept `AZURE_OPENAI_API_KEY` and acquire Entra bearer tokens before every REST request so the credential can refresh them. Apps 03–04 pass the same credential type to `AIProjectClient` instead of `AzureCliCredential`. Local development uses `az login`; another configured identity can be selected earlier in the default chain. Existing key-only setups must switch to an Entra identity with the required RBAC permissions. No package versions or service routes changed.
 
 **Agent Framework package update (2026-11-16):** apps 03–04 pin `Microsoft.Agents.AI.Foundry` to `1.28.0-preview.261106.1`, because the configured package feed publishes this preview but not stable `1.28.0`. That preview requires `Azure.AI.Projects` `3.0.0-beta.5`; its `Azure.Core` 1.63 dependency already supplies `DefaultAzureCredential`, so the direct `Azure.Identity` reference was removed from apps 03–04 to avoid duplicate credential type definitions. Apps 01–02 retain `Azure.Identity` 1.17.0 because they do not depend on Azure.Core 1.63. These are prerelease SDK dependencies, so future upgrades may require API migration; the current code compiled without source API changes. Review the [Agent Framework workflow guidance](https://learn.microsoft.com/en-us/agent-framework/workflows/agents-in-workflows) and [`DefaultAzureCredential` API reference](https://learn.microsoft.com/en-us/dotnet/api/azure.identity.defaultazurecredential) when changing them.

@@ -1,5 +1,9 @@
 # Sample 01 — Direct Responses API
 
+For the same conversation using typed SDK calls rather than raw HTTP/JSON,
+continue with [sample 01B - Responses SDK](../01B-ResponsesSdk/README.md).
+This REST baseline remains intentionally unchanged.
+
 ## Teaching goals
 
 - Set a breakpoint on `PostAsJsonAsync`. Inspect the JSON payload.

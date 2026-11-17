@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="01-DirectResponses/DirectResponses.csproj" />
+  <Project Path="01B-ResponsesSdk/ResponsesSdk.csproj" />
   <Project Path="02-ManualToolCalling/ManualToolCalling.csproj" />
   <Project Path="03-FoundryManagedAgent/FoundryManagedAgent.csproj" />
   <Project Path="04-AgentFrameworkWorkflow/AgentFrameworkWorkflow.csproj" />

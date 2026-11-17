@@ -1,13 +1,14 @@
-# AI-103 — Five C# Console Teaching Apps
+# AI-103 — C# Console Teaching Apps
 
 **Audience:** Microsoft technical trainers, who already understand LLM/agent architecture.  
-**Teaching sequence:** direct model API → manual function-calling loop → Foundry-managed agent → Agent Framework multi-agent orchestration → MCP client/tool integration.
+**Teaching sequence:** direct model API → typed Responses SDK (01B) → manual function-calling loop → Foundry-managed agent → Agent Framework multi-agent orchestration → MCP client/tool integration.
 
 Open **`AI103-Teaching.code-workspace`** in VS Code. Each sample is independent. Apps 01–04 use a fictional **IT service desk**, with synthetic ticket data; app 05 searches public Microsoft Learn documentation. No production system is modified.
 
 | Project | Demonstrates | Who owns the orchestration? | Day 2 connection |
 |---|---|---|---|
 | `01-DirectResponses` | REST Responses API, instructions, `previous_response_id` | Application + Responses service | APIs, model deployment, context |
+| `01B-ResponsesSdk` | Typed OpenAI Responses SDK, same explicit response-ID chaining | Application + Responses service | SDK versus REST, same state boundaries |
 | `02-ManualToolCalling` | JSON function schema, tool-call output, safe dispatch loop | **Your C# code** | Function calling, tool integration |
 | `03-FoundryManagedAgent` | `AIProjectClient`, versioned declarative agent, `AsAIAgent` | Foundry service | Agent Service lifecycle |
 | `04-AgentFrameworkWorkflow` | Code-defined `AIAgent`, concurrent fan-out/fan-in, collector, streaming and Mermaid summary | Agent Framework | Concurrent orchestration |
@@ -17,7 +18,7 @@ Open **`AI103-Teaching.code-workspace`** in VS Code. Each sample is independent.
 
 - .NET 10 SDK (recommended for this kit), VS Code with C# Dev Kit, Azure CLI.
 - A **Microsoft Foundry project** and a deployed text model that supports the **Responses API** (01–02) and agent use (03–05). App 05's `--tools-only` mode needs no Azure access.
-- `az login` in the correct tenant, plus project/model permissions. All five apps use `DefaultAzureCredential` for model access with Microsoft Entra ID, never API keys. See [SETUP.md](SETUP.md).
+- `az login` in the correct tenant, plus project/model permissions. All apps use `DefaultAzureCredential` for model access with Microsoft Entra ID, never API keys. See [SETUP.md](SETUP.md).
 - Internet access for NuGet restore and Azure APIs. Azure usage may incur charges.
 - Apps 03–05 currently pin prerelease Foundry/Projects packages to match the available feed. See [SOURCES.md](SOURCES.md) for the versions and upgrade caveat.
 
@@ -33,7 +34,11 @@ dotnet restore 01-DirectResponses/DirectResponses.csproj
 dotnet run --project 01-DirectResponses
 ```
 
-Then proceed to the next project. **These are intentionally five separate applications, not a chain with shared compiled dependencies.**
+Then proceed to the next project. **These are intentionally separate applications, not a chain with shared compiled dependencies.**
+
+For the SDK comparison immediately after app 01, run `.\scripts\run.ps1 1b`.
+[Sample 01B](01B-ResponsesSdk/README.md) reuses app 01's environment variables,
+prompts and commands while replacing manual HTTP/JSON with typed Responses calls.
 
 For the in-code MCP demonstration, run `dotnet run --project .\05-McpClientAgent -- --tools-only` without Azure, then `.\scripts\run.ps1 5` for the agent version. See [sample 05](05-McpClientAgent/README.md).
 
@@ -42,6 +47,10 @@ For the optional MCP protocol demonstration, see [Install and run MCP Inspector]
 ## Trainer demo progression
 
 1. Start with a query about VPN policy, then ask a follow-up. Inspect request JSON and the `previous_response_id` value. Explain that state still has a scope, a retention policy, and a cost.
+
+   Compare with sample 01B: inspect `CreateResponseOptions`, `PreviousResponseId`
+   and `GetOutputText()`. The SDK handles transport and typed data, not the
+   conversation loop, company knowledge, or model training.
 2. Ask "What's ticket INC-1042's status?" Inspect the model's JSON tool request. Pause before dispatch; show that the model **does not execute your .NET method**. Your code must validate and execute it. Then submit the result back as `function_call_output`.
 3. Create a named, versioned agent definition in Foundry. Compare its persistent definition with a model request. Query it, then examine its entry in the portal. The sample can delete its created version automatically.
 4. Run technical and incident specialists concurrently on the same fictional VPN question. Show the explicit fan-out and fan-in barrier, watch attributed stream updates, and inspect how the composer reconciles both findings. Copy the final text Mermaid diagram; contrast this topology with the sequential course exercise.
@@ -50,7 +59,7 @@ For the optional MCP protocol demonstration, see [Install and run MCP Inspector]
 ### Scope and what is **not** implemented
 
 - No real VPN changes, ticket writes, custom MCP server hosting, Foundry IQ knowledge base, Teams publication, or production hosting. App 05 connects to the real, public, read-only Microsoft Learn MCP server. No secrets are embedded in source code.
-- App 01 uses the Responses REST contract for maximal visibility. Apps 03–05 use Microsoft SDK abstractions. The contrast is intentional.
+- App 01 uses the Responses REST contract for maximal visibility. App 01B uses the typed OpenAI SDK for the same service without introducing agents. Apps 03–05 use Microsoft SDK abstractions. The contrast is intentional.
 - Check current build and live-test status, package versions, and documentation links in [SOURCES.md](SOURCES.md).
 
 ## Where to continue with GitHub Copilot
