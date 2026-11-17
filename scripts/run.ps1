@@ -1,4 +1,4 @@
-param([ValidateSet('1','2','3','4','5')][string]$Sample = '1')
+param([ValidateSet('1','1b','2','3','4','5')][string]$Sample = '1')
 Set-Location (Join-Path $PSScriptRoot '..')
 if (Test-Path .env) {
   foreach ($line in Get-Content .env) {
@@ -8,5 +8,5 @@ if (Test-Path .env) {
     if ($parts.Length -eq 2) { [Environment]::SetEnvironmentVariable($parts[0].Trim(), $parts[1].Trim()) }
   }
 }
-$folders = @{'1'='01-DirectResponses';'2'='02-ManualToolCalling';'3'='03-FoundryManagedAgent';'4'='04-AgentFrameworkWorkflow';'5'='05-McpClientAgent'}
+$folders = @{'1'='01-DirectResponses';'1b'='01B-ResponsesSdk';'2'='02-ManualToolCalling';'3'='03-FoundryManagedAgent';'4'='04-AgentFrameworkWorkflow';'5'='05-McpClientAgent'}
 dotnet run --project $folders[$Sample]

@@ -9,10 +9,11 @@ if [[ -f .env ]]; then
 fi
 case "${1:-}" in
   1) p=01-DirectResponses ;;
+  1b|1B) p=01B-ResponsesSdk ;;
   2) p=02-ManualToolCalling ;;
   3) p=03-FoundryManagedAgent ;;
   4) p=04-AgentFrameworkWorkflow ;;
   5) p=05-McpClientAgent ;;
-  *) echo "Usage: bash scripts/run.sh {1|2|3|4|5}"; exit 2 ;;
+  *) echo "Usage: bash scripts/run.sh {1|1b|2|3|4|5}"; exit 2 ;;
 esac
 dotnet run --project "$p"
