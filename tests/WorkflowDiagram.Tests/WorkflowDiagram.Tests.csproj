@@ -6,6 +6,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\04-AgentFrameworkWorkflow\WorkflowDiagram.cs" Link="WorkflowDiagram.cs" />
+    <ProjectReference Include="..\..\04-AgentFrameworkWorkflow\AgentFrameworkWorkflow.csproj" />
   </ItemGroup>
 </Project>

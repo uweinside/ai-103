@@ -10,7 +10,7 @@ Open **`AI103-Teaching.code-workspace`** in VS Code. Each sample is independent.
 | `01-DirectResponses` | REST Responses API, instructions, `previous_response_id` | Application + Responses service | APIs, model deployment, context |
 | `02-ManualToolCalling` | JSON function schema, tool-call output, safe dispatch loop | **Your C# code** | Function calling, tool integration |
 | `03-FoundryManagedAgent` | `AIProjectClient`, versioned declarative agent, `AsAIAgent` | Foundry service | Agent Service lifecycle |
-| `04-AgentFrameworkWorkflow` | Code-defined `AIAgent`, `WorkflowBuilder`, edges, streaming | Agent Framework | Orchestration and workflows |
+| `04-AgentFrameworkWorkflow` | Code-defined `AIAgent`, concurrent fan-out/fan-in, collector, streaming and Mermaid summary | Agent Framework | Concurrent orchestration |
 | `05-McpClientAgent` | Streamable HTTP MCP session, discovered schemas, allowlisted tool, agent dispatch | Application + Agent Framework + MCP client/server | MCP tool integration |
 
 ## Prerequisites
@@ -44,7 +44,7 @@ For the optional MCP protocol demonstration, see [Install and run MCP Inspector]
 1. Start with a query about VPN policy, then ask a follow-up. Inspect request JSON and the `previous_response_id` value. Explain that state still has a scope, a retention policy, and a cost.
 2. Ask "What's ticket INC-1042's status?" Inspect the model's JSON tool request. Pause before dispatch; show that the model **does not execute your .NET method**. Your code must validate and execute it. Then submit the result back as `function_call_output`.
 3. Create a named, versioned agent definition in Foundry. Compare its persistent definition with a model request. Query it, then examine its entry in the portal. The sample can delete its created version automatically.
-4. Compare two specialized agents. Build a sequential workflow, show the explicit edges and watch events from each stage.
+4. Run technical and incident specialists concurrently on the same fictional VPN question. Show the explicit fan-out and fan-in barrier, watch attributed stream updates, and inspect how the composer reconciles both findings. Copy the final text Mermaid diagram; contrast this topology with the sequential course exercise.
 5. Connect an MCP client to Microsoft Learn, discover tools and inspect their schemas. Contrast a direct application-selected search (`--tools-only`) with a model-requested search dispatched by Agent Framework. The client sends the request; the remote server executes the tool.
 
 ### Scope and what is **not** implemented
